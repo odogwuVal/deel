@@ -90,7 +90,7 @@ node("${defaults.worker_name}") {
                     sh "git clone git@github.com:ogtlimited/DEVELOPMENT-DEPLOYMENT-CHART.git || echo 'Already clone'"
                     sh "echo 'I am here' && cd DEVELOPMENT-*-CHART \
                         && helm upgrade --atomic --install ${helmName} ./${chartDirectory} \
-                        --set image.repository=${REPOSITORY_URI} \
+                        --set image.repository=${ecrRepository}/${defaults.image_repository} \
                         --set image.tag=${BUILD_NUMBER} \
                         --wait \
                         ${flags} ${autoscaling} ${access}"
