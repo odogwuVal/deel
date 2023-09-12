@@ -25,9 +25,7 @@ def get_reverse_ip():
     try:
         db.session.add(reversed_ip_obj)
         db.session.commit()
-        return f"Reverse IP: {reverse_ip} (Stored in the database)"
+        return f"Reversed IP: {reverse_ip} is Stored"
     except Exception as e:
         db.session.rollback()
         return f"Error: {str(e)}"
-
-    return f"Reversed IP: {reverse_ip}"
