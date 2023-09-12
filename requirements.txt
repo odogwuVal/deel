@@ -4,5 +4,4 @@ python-dotenv
 sqlalchemy
 flask-sqlalchemy
 gunicorn
-mysql-connector-python
 psycopg2
