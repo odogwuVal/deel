@@ -11,7 +11,7 @@ Map defaults = [
 ]
 
 def ecrRepository = "651611223190.dkr.ecr.us-east-1.amazonaws.com"
-node("${WORKER_LABEL}") {
+node("${defaults.worker_name}") {
     try {
         properties([
             disableConcurrentBuilds(),
