@@ -18,9 +18,8 @@ node("${defaults.worker_name}") {
             buildDiscarder(logRotator(numToKeepStr: '10'))
         ])
         checkout scm
-        stage('Build and push image') {
-            if (env.BRANCH_NAME == 'main') {
-                withEnv(["AWS_DEFAULT_REGION=us-east-1", "NAME=${defaults.image_repository}"]) {
+        stage('Build and push image') {   
+        withEnv(["AWS_DEFAULT_REGION=us-east-1", "NAME=${defaults.image_repository}"]) {
             sh "aws ecr describe-repositories --repository-names ${NAME} || aws ecr create-repository --repository-name ${NAME} --image-scanning-configuration scanOnPush=true && aws ecr set-repository-policy --repository-name ${NAME} --policy-text file://ecr.json"
             sh "aws ecr get-login-password \
             | docker login \
@@ -30,7 +29,6 @@ node("${defaults.worker_name}") {
             sh "docker build -t ${NAME} ."
             sh "docker tag ${NAME} ${ecrRepository}/${NAME}:${BUILD_NUMBER}"
             sh "docker push ${ecrRepository}/${NAME}:${BUILD_NUMBER}"
-                }
             }
         }
         stage ('tool setup') {
