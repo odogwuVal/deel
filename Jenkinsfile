@@ -7,7 +7,24 @@ Map defaults = [
     publiclyAccessible: true,
     deployment: "reverseip",
     worker_name: "Dev-Worker",
-    helmFlags: ""
+    helmFlags:"--set autoscaling.enabled=false \
+        --set volume.secondVolume.enabled=false \
+        --set volume.mountPath=/app/.env \
+        --set resources.requests.memory=150Mi \
+        --set resources.requests.cpu=120m \
+        --set resources.limits.cpu=200 \
+        --set resources.limits.memory=200Mi \
+        --set ingress.enabled=true \
+        --set hostNamePrefix=deel \
+        --set secretObjects.secretName=reverseip \
+        --set probes.readinessProbe.enabled=true \
+        --set probes.path=/ \
+        --set probes.livenessProbe.enabled=true \
+        --set PersistentVolumeClaim.enabled=false \
+        --set serviceAccount.name=secret-store \
+        --set image.port=80 \
+        --set cron.enabled=false \
+        --set service.type=NodePort"
 ]
 
 def ecrRepository = "651611223190.dkr.ecr.us-east-1.amazonaws.com"
@@ -50,12 +67,11 @@ node("${defaults.worker_name}") {
             sh "aws --version"
         }
         stage ('deploy to eks') {
-            if (env.BRANCH_NAME == 'main') {
                 flags = "${defaults.helmFlags}"
                 autoscaling = "--set autoscaling.enabled=false"
                 chartDirectory = "deployment-chart"
                 helmName = "${defaults.deployment}"
-                if (pipelimeParams.publiclyAccessible == true) {
+                if (defaults.publiclyAccessible == true) {
                     access = "set ingress.enabled=true"
                 }
                 else {
@@ -79,7 +95,6 @@ node("${defaults.worker_name}") {
                         --wait \
                         ${flags} ${autoscaling} ${access}"
                 }
-            }
         }
     } catch (e) {
         currentBuild.result = "FAILED"
