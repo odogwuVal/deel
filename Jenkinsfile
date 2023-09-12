@@ -72,10 +72,10 @@ node("${defaults.worker_name}") {
                 chartDirectory = "deployment-chart"
                 helmName = "${defaults.deployment}"
                 if (defaults.publiclyAccessible == true) {
-                    access = "set ingress.enabled=true"
+                    access = "--set ingress.enabled=true"
                 }
                 else {
-                    access = "set ingress.enabled=false"
+                    access = "--set ingress.enabled=false"
                 }
                 withCredentials([file(credentialsId: 'github_ssh_pub', variable: 'github_ssh_pub'), 
                 file(credentialsId: 'github_ssh', variable: 'github_ssh')]) {
