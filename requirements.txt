@@ -5,3 +5,4 @@ sqlalchemy
 flask-sqlalchemy
 gunicorn
 psycopg2
+Werkzeug
